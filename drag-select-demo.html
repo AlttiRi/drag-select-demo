@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Drag Select</title>
+  <style>
+    html, body {
+      display: grid;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+    .drag-selectable {
+      box-sizing: border-box;
+      border: 5px solid transparent;
+      width:  128px;
+      height: 64px;
+    }
+    .drag-select-area {
+      background-color: hsl(210deg 80% 50% / 50%);
+    }
+    .drag-selected {
+      border: 5px solid black;
+    }
+
+    .main {
+      max-height: 444px;
+      width: 444px;
+      overflow: auto;
+      display: grid;
+      justify-content: center;
+    }
+    .debug {
+      position: fixed;
+      top: 5px;
+      left: 5px;
+    }
+    .debug-2 {
+      position: fixed;
+      top: 25px;
+      left: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="debug debug-1"></div>
+<div class="debug debug-2"></div>
+<div class="main">
+
+</div>
+
+<script>
+  // mainEl.scrollTop += 2
+  const debug1 = document.querySelector(".debug-1");
+  const debug2 = document.querySelector(".debug-2");
+
+  let mainEl = document.querySelector(".main");
+      mainEl = document.querySelector("html");
+  const mainRect = mainEl.getBoundingClientRect();
+  debug1.textContent = JSON.stringify(mainRect);
+  mainEl.style.position = "relative";
+  init(mainEl);
+
+
+  /** @type {{x, y, width, height, elem}[]} */
+  const selectables = [];
+  const selectableElems = [...document.querySelectorAll(".drag-selectable")];
+  for (const selectable of selectableElems) {
+    const {x, y, width, height} = selectable.getBoundingClientRect();
+    selectables.push({x: x + mainEl.scrollLeft, y: y + mainEl.scrollTop, width, height, elem: selectable});
+    selectable.dataset.info = JSON.stringify({x, y, width, height});
+  }
+
+  function checkSelected(selectAreaElem) {
+    const select = selectAreaElem.getBoundingClientRect();
+    const {x, y, height, width} = select;
+    for (const selectable of selectables) {
+      if (isRectanglesIntersected({x: x + mainEl.scrollLeft, y: y + mainEl.scrollTop, height, width}, selectable)){
+        selectable.elem.classList.add("drag-selected");
+      } else {
+        selectable.elem.classList.remove("drag-selected");
+      }
+    }
+  }
+
+
+
+  addEventListener("pointerdown", createDiv);
+  async function createDiv(event) {
+
+    event.preventDefault();
+    const x = event.pageX - mainRect.x;
+    const y = event.pageY - mainRect.y;
+
+    const div = document.createElement("div");
+    div.style.position = "absolute";
+    div.style.width  = "0";
+    div.style.height = "0";
+    div.style.left = x + "px";
+    div.style.top  = y + "px";
+    div.classList.add("drag-select-area");
+    mainEl.append(div);
+
+    function resize(event) {
+      // debug2.textContent = JSON.stringify({
+      //   ...mainRect,
+      //   scrollLeft: mainEl.scrollLeft, scrollTop: mainEl.scrollTop
+      // });
+
+      const diffX = event.pageX - x // + mainEl.scrollLeft;
+      const diffY = event.pageY - y // + mainEl.scrollTop;
+      div.style.left = diffX < 0 ? x + diffX + "px" : x + "px";
+      div.style.top  = diffY < 0 ? y + diffY + "px" : y + "px";
+      div.style.height = Math.abs(diffY) + "px";
+      div.style.width  = Math.abs(diffX) + "px";
+
+      debug2.textContent = JSON.stringify(["left "+div.style.left, "top "+div.style.top, "height "+div.style.height, "width "+div.style.width]);
+      checkSelected(div);
+    }
+    selectables.forEach(item => item.elem.classList.remove("drag-selected"));
+    addEventListener("pointermove", resize);
+    addEventListener("pointerup", () => {
+      removeEventListener("pointermove", resize);
+      div.remove();
+    });
+  }
+
+  function isRectanglesIntersected(r1, r2) {
+    return !(r1.x + r1.width  < r2.x ||
+            r2.x + r2.width  < r1.x ||
+            r1.y + r1.height < r2.y ||
+            r2.y + r2.height < r1.y);
+  }
+
+  function init(insertPlace) {
+    for (let i = 0; i < 50; i++) {
+      const div = document.createElement("div");
+      div.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+      div.classList.add("drag-selectable");
+      insertPlace.append(div);
+    }
+  }
+</script>
+
+
+</body>
+</html>
