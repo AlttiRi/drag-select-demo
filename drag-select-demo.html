@@ -14,8 +14,8 @@
     .drag-selectable {
       box-sizing: border-box;
       border: 5px solid transparent;
-      width:  128px;
-      height: 64px;
+      width:  150px;
+      height: 50px;
     }
     .drag-select-area {
       background-color: hsl(210deg 80% 50% / 50%);
@@ -30,6 +30,7 @@
       overflow: auto;
       display: grid;
       justify-content: center;
+      margin-top: 88px;
     }
     .debug {
       position: fixed;
@@ -37,9 +38,10 @@
       left: 5px;
     }
     .debug-2 {
-      position: fixed;
       top: 25px;
-      left: 5px;
+    }
+    .debug-3 {
+      top: 45px;
     }
   </style>
 </head>
@@ -47,6 +49,7 @@
 
 <div class="debug debug-1"></div>
 <div class="debug debug-2"></div>
+<div class="debug debug-3"></div>
 <div class="main">
 
 </div>
@@ -55,43 +58,42 @@
   // mainEl.scrollTop += 2
   const debug1 = document.querySelector(".debug-1");
   const debug2 = document.querySelector(".debug-2");
+  const debug3 = document.querySelector(".debug-3");
 
-  let mainEl = document.querySelector(".main");
-     // mainEl = document.querySelector("html");
-  const mainRect = mainEl.getBoundingClientRect();
-  // debug1.textContent = JSON.stringify(mainRect);
-  mainEl.style.position = "relative";
-  init(mainEl);
+  let contElem = document.querySelector(".main");
+      // contElem = document.querySelector("body");
+  contElem.style.position = "relative";
+  initHtml(contElem);
 
-
-  /** @type {{x, y, width, height, elem}[]} */
-  const selectables = [];
   const selectableElems = [...document.querySelectorAll(".drag-selectable")];
-  for (const selectable of selectableElems) {
-    const {x, y, width, height} = selectable.getBoundingClientRect();
-    selectables.push({x: x + mainEl.scrollLeft, y: y + mainEl.scrollTop, width, height, elem: selectable});
-    selectable.dataset.info = JSON.stringify({x, y, width, height});
-  }
+  // for (const selectable of selectableElems) {
+  //   const {x, y, width, height} = selectable.getBoundingClientRect();
+  //   selectables.push({x: x + contElem.scrollLeft, y: y + contElem.scrollTop, width, height, elem: selectable});
+  // }
 
-  function checkSelected(selectAreaElem) {
-    const select = selectAreaElem.getBoundingClientRect();
+  function checkIntersections(selectAreaElem) {
+    const select = getRect(selectAreaElem);
     const {x, y, height, width} = select;
-    for (const selectable of selectables) {
-      if (isRectanglesIntersected({x: x + mainEl.scrollLeft, y: y + mainEl.scrollTop, height, width}, selectable)){
-        selectable.elem.classList.add("drag-selected");
+    debug1.textContent = JSON.stringify(["x, y, height, width ", x, y, height, width]);
+
+    for (const itemElem of selectableElems) {
+      const itemRect = getRect(itemElem);
+      if (isRectanglesIntersected(
+              {x: x + contElem.scrollLeft, y: y + contElem.scrollTop, height, width},
+              {x: itemRect.x + contElem.scrollLeft, y: itemRect.y + contElem.scrollTop, width: itemRect.width, height: itemRect.height})){
+        itemElem.classList.add("drag-selected");
       } else {
-        selectable.elem.classList.remove("drag-selected");
+        itemElem.classList.remove("drag-selected");
       }
     }
   }
 
-
-
   addEventListener("pointerdown", createDiv);
   async function createDiv(event) {
     event.preventDefault();
-    const x = event.pageX   - mainRect.x + mainEl.scrollLeft;
-    const y = event.pageY   - mainRect.y + mainEl.scrollTop;
+    const contRect = getRect(contElem);
+    const x = event.pageX - contRect.x + contElem.scrollLeft;
+    const y = event.pageY - contRect.y + contElem.scrollTop;
 
     const div = document.createElement("div");
     div.style.position = "absolute";
@@ -100,30 +102,34 @@
     div.style.left = x + "px";
     div.style.top  = y + "px";
     div.classList.add("drag-select-area");
-    mainEl.append(div);
+    contElem.append(div);
 
+    const {scrollY, scrollX} = window;
     function resize(event) {
-      // debug2.textContent = JSON.stringify({
-      //   ...mainRect,
-      //   scrollLeft: mainEl.scrollLeft, scrollTop: mainEl.scrollTop
-      // });
 
-      const diffX = event.pageX - x   - mainRect.x + mainEl.scrollLeft;
-      const diffY = event.pageY - y   - mainRect.y + mainEl.scrollTop;
-      div.style.left = diffX < 0 ? x + diffX + "px" : x + "px";
-      div.style.top  = diffY < 0 ? y + diffY + "px" : y + "px";
+      debug2.textContent = JSON.stringify(["event.pageY, y, contRect.y, contElem.scrollTop ", event.pageY, y, contRect.y, contElem.scrollTop]);
+      debug3.textContent = JSON.stringify([scrollY, scrollX]);
+
+      const diffX = event.pageX - x - contRect.x + contElem.scrollLeft;
+      const diffY = event.pageY - y - contRect.y + contElem.scrollTop;
+      div.style.left = diffX < 0 ? x + diffX - scrollX + "px" : x - scrollX + "px";
+      div.style.top  = diffY < 0 ? y + diffY - scrollY + "px" : y - scrollY + "px";
       div.style.height = Math.abs(diffY) + "px";
       div.style.width  = Math.abs(diffX) + "px";
 
-      debug2.textContent = JSON.stringify(["left "+div.style.left, "top "+div.style.top, "height "+div.style.height, "width "+div.style.width]);
-      checkSelected(div);
+      checkIntersections(div);
     }
-    selectables.forEach(item => item.elem.classList.remove("drag-selected"));
+    selectableElems.forEach(elem => elem.classList.remove("drag-selected"));
     addEventListener("pointermove", resize);
     addEventListener("pointerup", () => {
       removeEventListener("pointermove", resize);
       div.remove();
     });
+  }
+
+  function getRect(elem) {
+    const rect = elem.getBoundingClientRect();
+    return {x: rect.x, y: rect.y, width: rect.width, height: rect.height};
   }
 
   function isRectanglesIntersected(r1, r2) {
@@ -133,7 +139,7 @@
             r2.y + r2.height < r1.y);
   }
 
-  function init(insertPlace) {
+  function initHtml(insertPlace) {
     for (let i = 0; i < 50; i++) {
       const div = document.createElement("div");
       div.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
