@@ -88,8 +88,9 @@
     }
   }
 
-  addEventListener("pointerdown", createDiv);
+  contElem.addEventListener("pointerdown", createDiv);
   async function createDiv(event) {
+    if (event.target !== event.currentTarget) { return; }
     event.preventDefault();
     const contRect = getRect(contElem);
     const x = event.pageX - contRect.x + contElem.scrollLeft;
@@ -107,7 +108,9 @@
     const {scrollY, scrollX} = window;
     function resize(event) {
 
-      debug2.textContent = JSON.stringify(["event.pageY, y, contRect.y, contElem.scrollTop ", event.pageY, y, contRect.y, contElem.scrollTop]);
+
+      debug2.textContent = JSON.stringify(
+              ["event.pageY, y, contRect.y, contElem.scrollTop ", event.pageY, y, contRect.y, contElem.scrollTop]);
       debug3.textContent = JSON.stringify([scrollY, scrollX]);
 
       const diffX = event.pageX - x - contRect.x + contElem.scrollLeft;
@@ -116,13 +119,13 @@
       div.style.top  = diffY < 0 ? y + diffY - scrollY + "px" : y - scrollY + "px";
       div.style.height = Math.abs(diffY) + "px";
       div.style.width  = Math.abs(diffX) + "px";
-
+      console.log(event);
       checkIntersections(div);
     }
     selectableElems.forEach(elem => elem.classList.remove("drag-selected"));
-    addEventListener("pointermove", resize);
-    addEventListener("pointerup", () => {
-      removeEventListener("pointermove", resize);
+    contElem.addEventListener("pointermove", resize);
+    contElem.addEventListener("pointerup", () => {
+      contElem.removeEventListener("pointermove", resize);
       div.remove();
     });
   }
