@@ -98,9 +98,9 @@ function initDragSelect(event, contElem) {
     addEventListener("scroll", resize, {passive: true, capture: true});
     addEventListener("pointerup", () => {
         removeEventListener("pointermove", resize);
-        removeEventListener("scroll", resize);
+        removeEventListener("scroll", resize, {capture: true});
         areaElem.remove();
-    });
+    }, {once: true});
 }
 
 function getRect(elem) {
