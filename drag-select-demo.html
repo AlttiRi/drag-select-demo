@@ -8,7 +8,7 @@
       display: grid;
       justify-content: center;
       width: 100%;
-      height: 100%;
+      height: 150%;
       margin: 0;
     }
     .main {
@@ -24,12 +24,9 @@
       top: 5px;
       left: 5px;
     }
-    .debug-2 {
-      top: 25px;
-    }
-    .debug-3 {
-      top: 45px;
-    }
+    .debug-2 {top: 25px;}
+    .debug-3 {top: 45px;}
+    .debug-4 {top: 65px;}
 
     .drag-selectable {
       box-sizing: border-box;
@@ -50,98 +47,17 @@
 <div class="debug debug-1"></div>
 <div class="debug debug-2"></div>
 <div class="debug debug-3"></div>
-<div class="main">
+<div class="debug debug-4"></div>
+<div class="main"></div>
 
-</div>
+<script type="module">
+  import {dragSelect} from "./index.js";
 
-<script>
   // mainEl.scrollTop += 2
-  const debug1 = document.querySelector(".debug-1");
-  const debug2 = document.querySelector(".debug-2");
-  const debug3 = document.querySelector(".debug-3");
-
   let contElem = document.querySelector(".main");
-      // contElem = document.querySelector("body");
-  contElem.style.position = "relative";
+   // contElem = document.querySelector("body");
+
   initHtml(contElem);
-
-  const selectableElems = [...document.querySelectorAll(".drag-selectable")];
-  // for (const selectable of selectableElems) {
-  //   const {x, y, width, height} = selectable.getBoundingClientRect();
-  //   selectables.push({x: x + contElem.scrollLeft, y: y + contElem.scrollTop, width, height, elem: selectable});
-  // }
-
-  function checkIntersections(selectAreaElem) {
-    const select = getRect(selectAreaElem);
-    const {x, y, height, width} = select;
-    debug1.textContent = JSON.stringify(["x, y, height, width ", x, y, height, width]);
-
-    for (const itemElem of selectableElems) {
-      const itemRect = getRect(itemElem);
-      if (isRectanglesIntersected(
-              {x: x + contElem.scrollLeft, y: y + contElem.scrollTop, height, width},
-              {x: itemRect.x + contElem.scrollLeft, y: itemRect.y + contElem.scrollTop, width: itemRect.width, height: itemRect.height})){
-        itemElem.classList.add("drag-selected");
-      } else {
-        itemElem.classList.remove("drag-selected");
-      }
-    }
-  }
-
-  contElem.addEventListener("pointerdown", createDiv);
-  async function createDiv(event) {
-    if (event.target !== event.currentTarget) { return; }
-    event.preventDefault();
-    const contRect = getRect(contElem);
-    const x = event.pageX - contRect.x + contElem.scrollLeft;
-    const y = event.pageY - contRect.y + contElem.scrollTop;
-
-    const div = document.createElement("div");
-    div.style.position = "absolute";
-    div.style.width  = "0";
-    div.style.height = "0";
-    div.style.left = x + "px";
-    div.style.top  = y + "px";
-    div.classList.add("drag-select-area");
-    contElem.append(div);
-
-    const {scrollY, scrollX} = window;
-    function resize(event) {
-
-
-      debug2.textContent = JSON.stringify(
-              ["event.pageY, y, contRect.y, contElem.scrollTop ", event.pageY, y, contRect.y, contElem.scrollTop]);
-      debug3.textContent = JSON.stringify([scrollY, scrollX]);
-
-      const diffX = event.pageX - x - contRect.x + contElem.scrollLeft;
-      const diffY = event.pageY - y - contRect.y + contElem.scrollTop;
-      div.style.left = diffX < 0 ? x + diffX - scrollX + "px" : x - scrollX + "px";
-      div.style.top  = diffY < 0 ? y + diffY - scrollY + "px" : y - scrollY + "px";
-      div.style.height = Math.abs(diffY) + "px";
-      div.style.width  = Math.abs(diffX) + "px";
-      console.log(event);
-      checkIntersections(div);
-    }
-    selectableElems.forEach(elem => elem.classList.remove("drag-selected"));
-    contElem.addEventListener("pointermove", resize);
-    contElem.addEventListener("pointerup", () => {
-      contElem.removeEventListener("pointermove", resize);
-      div.remove();
-    });
-  }
-
-  function getRect(elem) {
-    const rect = elem.getBoundingClientRect();
-    return {x: rect.x, y: rect.y, width: rect.width, height: rect.height};
-  }
-
-  function isRectanglesIntersected(r1, r2) {
-    return !(r1.x + r1.width  < r2.x ||
-            r2.x + r2.width  < r1.x ||
-            r1.y + r1.height < r2.y ||
-            r2.y + r2.height < r1.y);
-  }
-
   function initHtml(insertPlace) {
     for (let i = 0; i < 50; i++) {
       const div = document.createElement("div");
@@ -150,8 +66,9 @@
       insertPlace.append(div);
     }
   }
-</script>
 
+  dragSelect(contElem);
+</script>
 
 </body>
 </html>
