@@ -44,13 +44,7 @@ function initDragSelect(event, contElem) {
         scrollX: window.scrollX,
     };
 
-    const areaElem = document.createElement("div");
-    areaElem.style.position = "absolute";
-    areaElem.style.width  = "0";
-    areaElem.style.height = "0";
-    areaElem.style.left = init.x + "px";
-    areaElem.style.top  = init.y + "px";
-    areaElem.classList.add("drag-select-area");
+    const areaElem = createAreaAt(init.x, init.y);
     contElem.append(areaElem);
 
     let state;
@@ -101,6 +95,17 @@ function initDragSelect(event, contElem) {
         removeEventListener("scroll", resize, {capture: true});
         areaElem.remove();
     }, {once: true});
+}
+
+function createAreaAt(x, y) {
+    const areaElem = document.createElement("div");
+    areaElem.style.position = "absolute";
+    areaElem.style.width  = "0";
+    areaElem.style.height = "0";
+    areaElem.style.left = x + "px";
+    areaElem.style.top  = y + "px";
+    areaElem.classList.add("drag-select-area");
+    return areaElem;
 }
 
 function getRect(elem) {
