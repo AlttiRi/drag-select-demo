@@ -13,15 +13,16 @@ const debug4 = document.querySelector(".debug-4");
 
 
 function checkIntersections(selectAreaElem, contElem, selectableElems) {
-    const select = getRect(selectAreaElem);
-    const {x, y, height, width} = select;
+    const areaRect = getRect(selectAreaElem);
+    const {x, y, height, width} = areaRect;
     debug1.textContent = JSON.stringify(["selectAreaElem", {x, y, height, width}], null, " ");
 
     for (const itemElem of selectableElems) {
         const itemRect = getRect(itemElem);
         if (isRectanglesIntersected(
-            {x: x + contElem.scrollLeft, y: y + contElem.scrollTop, height, width},
-            {x: itemRect.x + contElem.scrollLeft, y: itemRect.y + contElem.scrollTop, width: itemRect.width, height: itemRect.height})){
+            {x: areaRect.x + contElem.scrollLeft, y: areaRect.y + contElem.scrollTop, width: areaRect.width, height: areaRect.height},
+            {x: itemRect.x + contElem.scrollLeft, y: itemRect.y + contElem.scrollTop, width: itemRect.width, height: itemRect.height},
+        )) {
             itemElem.classList.add("drag-selected");
         } else {
             itemElem.classList.remove("drag-selected");
