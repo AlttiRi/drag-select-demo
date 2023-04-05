@@ -40,7 +40,7 @@ function initDragSelect(event, contElem) {
     const init = {
         x: event.pageX - contRect.x + contElem.scrollLeft,
         y: event.pageY - contRect.y + contElem.scrollTop,
-        scrollY: window.scrollY,
+        scrollY: window.scrollY, // aka window.pageYOffset
         scrollX: window.scrollX,
     };
 
