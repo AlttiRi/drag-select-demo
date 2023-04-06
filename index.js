@@ -23,18 +23,18 @@ export function dragSelect(contElem) {
         const selectableElems = [...document.querySelectorAll(".drag-selectable")];
         selectableElems.forEach(elem => elem.classList.remove("drag-selected"));
 
-        let state;
+        let lastPointerEvent;
         function resize(event) {
-            // console.log(event);
-            const clientX = event.clientX === undefined ? state.clientX : event.clientX;
-            const clientY = event.clientY === undefined ? state.clientY : event.clientY;
-            if (event.clientX !== undefined) {
-                state = {clientX: event.clientX, clientY: event.clientY};
+            console.log(event);
+            if (event.pointerId) {
+                lastPointerEvent = event;
+            } else {
+                event = lastPointerEvent;
             }
 
             const contRect = getRect(contElem);
-            const x2 = clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
-            const y2 = clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
+            const x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
+            const y2 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
 
             areaElem.style.left   = Math.min(x1, x2) + "px";
             areaElem.style.top    = Math.min(y1, y2) + "px";
@@ -53,8 +53,8 @@ export function dragSelect(contElem) {
                     "contElem.clientTop":  contElem.clientTop,
                 }, null, " ");
                 debug4.textContent = JSON.stringify({
-                    "clientX": clientX,
-                    "clientY": clientY,
+                    "clientX": event.clientX,
+                    "clientY": event.clientY,
                 }, null, " ");
             }
         }
