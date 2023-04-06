@@ -26,21 +26,15 @@ export function dragSelect(contElem) {
         let lastPointerEvent;
         function resize(event) {
             console.log(event);
-            if (event.pointerId) {
-                lastPointerEvent = event;
-            } else {
-                event = lastPointerEvent;
-            }
+            event.pointerId ? (lastPointerEvent = event) : (event = lastPointerEvent);
 
             const contRect = getRect(contElem);
             const x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
             const y2 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
-
             areaElem.style.left   = Math.min(x1, x2) + "px";
             areaElem.style.top    = Math.min(y1, y2) + "px";
             areaElem.style.width  = Math.abs(x2 - x1) + "px";
             areaElem.style.height = Math.abs(y2 - y1) + "px";
-
             checkIntersections(areaElem, contElem, selectableElems);
 
             {
@@ -70,8 +64,7 @@ export function dragSelect(contElem) {
 
 function checkIntersections(selectAreaElem, contElem, selectableElems) {
     const areaRect = getRect(selectAreaElem);
-    const {x, y, height, width} = areaRect;
-    debug1.textContent = JSON.stringify(["selectAreaElem", {x, y, height, width}], null, " ");
+    debug1.textContent = JSON.stringify(["selectAreaElemRect", areaRect], null, " ");
 
     for (const itemElem of selectableElems) {
         const itemRect = getRect(itemElem);
