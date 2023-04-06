@@ -47,8 +47,8 @@ function initDragSelect(event, contElem) {
         diffX: event.clientX + contElem.scrollLeft - contRect.x,
         diffY: event.clientY + contElem.scrollTop  - contRect.y,
 
-        scrollY: window.scrollY, // aka window.pageYOffset
-        scrollX: window.scrollX,
+        scrollX: window.scrollX, // aka window.pageXOffset
+        scrollY: window.scrollY,
 
         scrollTop: contElem.scrollTop,
         scrollLeft: contElem.scrollLeft,
