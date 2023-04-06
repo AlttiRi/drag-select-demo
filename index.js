@@ -39,10 +39,19 @@ function initDragSelect(event, contElem) {
 
     const contRect = getRect(contElem);
     const init = {
-        x: event.pageX - contRect.x + contElem.scrollLeft,
-        y: event.pageY - contRect.y + contElem.scrollTop,
+        x: contRect.x,
+        y: contRect.y,
+
+        clientX: event.clientX,
+        clientY: event.clientY,
+        diffX: event.clientX + contElem.scrollLeft - contRect.x,
+        diffY: event.clientY + contElem.scrollTop  - contRect.y,
+
         scrollY: window.scrollY, // aka window.pageYOffset
         scrollX: window.scrollX,
+
+        scrollTop: contElem.scrollTop,
+        scrollLeft: contElem.scrollLeft,
     };
 
     const areaElem = createAreaAt(init.x, init.y);
@@ -50,32 +59,38 @@ function initDragSelect(event, contElem) {
 
     let state;
     function resize(event) {
-        const pageX = event.pageX === undefined ? state.pageX : event.pageX;
-        const pageY = event.pageY === undefined ? state.pageY : event.pageY;
+        const clientX = event.clientX === undefined ? state.clientX : event.clientX;
+        const clientY = event.clientY === undefined ? state.clientY : event.clientY;
 
-        const diffX = pageX - init.x - contRect.x + contElem.scrollLeft;
-        const diffY = pageY - init.y - contRect.y + contElem.scrollTop;
-        areaElem.style.left = diffX < 0 ? init.x + diffX - init.scrollX + "px" : init.x - init.scrollX + "px";
-        areaElem.style.top  = diffY < 0 ? init.y + diffY - init.scrollY + "px" : init.y - init.scrollY + "px";
-        areaElem.style.height = Math.abs(diffY) + "px";
-        areaElem.style.width  = Math.abs(diffX) + "px";
+        const diffX = clientX - init.clientX + (window.scrollX - init.scrollX) + (contElem.scrollLeft - init.scrollLeft);
+        const diffY = clientY - init.clientY + (window.scrollY - init.scrollY) + (contElem.scrollTop  - init.scrollTop);
+
+        // const contRect = getRect(contElem);
+        const initDiffX = init.diffX // - contRect.x;
+        const initDiffY = init.diffY // - contRect.y;
+
+        areaElem.style.left = (diffX < 0 ? initDiffX + diffX : initDiffX) + "px";
+        areaElem.style.top  = (diffY < 0 ? initDiffY + diffY : initDiffY) + "px";
+        areaElem.style.width  = Math.abs(diffX /*+ init.x - contRect.x*/) + "px";
+        areaElem.style.height = Math.abs(diffY /*+ init.y - contRect.y*/) + "px";
+
         checkIntersections(areaElem, contElem, selectableElems);
 
-        if (event.pageY !== undefined) {
+        if (event.clientX !== undefined) {
             state = {
-                pageX: event.pageX, scrollX: window.scrollX,
-                pageY: event.pageY, scrollY: window.scrollY,
+                clientX: event.clientX,
+                clientY: event.clientY,
             };
         }
 
         {
-            console.log(event.pageY === undefined, state);
+            // console.log(event.pageY === undefined, state);
             console.log(event);
             const {x, y, height, width} = getRect(contElem);
             debug2.textContent = JSON.stringify(
                 ["contElem:", {x, y, height, width}], null, " ");
             debug3.textContent = JSON.stringify({
-                pageY,
+                clientY,
                 "init.y": init.y,
                 "contRect.y": contRect.y,
                 "contElem.scrollTop":   contElem.scrollTop,
