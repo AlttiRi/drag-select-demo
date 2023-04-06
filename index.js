@@ -44,8 +44,8 @@ function initDragSelect(event, contElem) {
 
         clientX: event.clientX,
         clientY: event.clientY,
-        diffX: event.clientX + contElem.scrollLeft - contRect.x,
-        diffY: event.clientY + contElem.scrollTop  - contRect.y,
+        diffX: event.clientX + contElem.scrollLeft /*+ window.scrollX*/ - contRect.x,
+        diffY: event.clientY + contElem.scrollTop  /*+ window.scrollY*/ - contRect.y,
 
         scrollX: window.scrollX, // aka window.pageXOffset
         scrollY: window.scrollY,
@@ -62,8 +62,8 @@ function initDragSelect(event, contElem) {
         const clientX = event.clientX === undefined ? state.clientX : event.clientX;
         const clientY = event.clientY === undefined ? state.clientY : event.clientY;
 
-        const diffX = clientX - init.clientX + (window.scrollX - init.scrollX) + (contElem.scrollLeft - init.scrollLeft);
-        const diffY = clientY - init.clientY + (window.scrollY - init.scrollY) + (contElem.scrollTop  - init.scrollTop);
+        const diffX = clientX - init.clientX + window.scrollX + contElem.scrollLeft - init.scrollX - init.scrollLeft;
+        const diffY = clientY - init.clientY + window.scrollY + contElem.scrollTop  - init.scrollY - init.scrollTop;
 
         // const contRect = getRect(contElem);
         const initDiffX = init.diffX // - contRect.x;
