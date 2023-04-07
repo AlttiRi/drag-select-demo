@@ -9,10 +9,9 @@ export function dragSelect(contElem) {
     enableTouchSupport(contElem);
     contElem.addEventListener("pointerdown", onPointerdown, {passive: false});
     function onPointerdown(event) {
-        if (event.target !== event.currentTarget     ||
-            event.offsetX > event.target.clientWidth || event.offsetY > event.target.clientHeight ||
-            event.pointerType === "touch" && contElem.style.touchAction !== "none"
-        ) { return; }
+        const onScrollBar = event.offsetX > event.target.clientWidth || event.offsetY > event.target.clientHeight;
+        const unsupportedTouch = event.pointerType === "touch" && getComputedStyle(contElem)["touch-action"] !== "none";
+        if (event.target !== event.currentTarget || onScrollBar || unsupportedTouch) { return; }
         event.preventDefault();
         contElem.setPointerCapture(event.pointerId);
 
@@ -28,8 +27,8 @@ export function dragSelect(contElem) {
 
         let lastPointerEvent;
         function resizeArea(event) {
-            console.log(event);
-            event.pointerId !== undefined ? (lastPointerEvent = event) : (event = lastPointerEvent);
+            if (event.type === "scroll" && !lastPointerEvent) { return; }
+            event.type !== "scroll" ? (lastPointerEvent = event) : (event = lastPointerEvent);
 
             const contRect = getRect(contElem);
             const x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
