@@ -28,7 +28,7 @@ export function dragSelect(contElem) {
         let lastPointerEvent;
         function resizeArea(event) {
             console.log(event);
-            event.pointerId ? (lastPointerEvent = event) : (event = lastPointerEvent);
+            event.pointerId !== undefined ? (lastPointerEvent = event) : (event = lastPointerEvent);
 
             const contRect = getRect(contElem);
             const x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
@@ -106,7 +106,7 @@ function enableTouchSupport(contElem) {
     contElem.addEventListener("pointerdown", (event) => {
         event.preventDefault();
         clearTimeout(timerId);
-        setTimeout(() => contElem.style.touchAction = "none", 50);
+        setTimeout(() => contElem.style.touchAction = "none", 0);
         timerId = setTimeout(() => contElem.style.touchAction = "", 400);
     });
 }
