@@ -6,7 +6,7 @@ const debug4 = document.querySelector(".debug-4");
 
 export function dragSelect(contElem) {
     contElem.style.position = "relative";
-    contElem.addEventListener("pointerdown", (event) => {
+    function onPointerdown(event) {
         if (event.target !== event.currentTarget || event.offsetX > event.target.clientWidth) {
             return;
         }
@@ -59,7 +59,8 @@ export function dragSelect(contElem) {
             removeEventListener("scroll", resize, {capture: true});
             areaElem.remove();
         }, {once: true});
-    }, {passive: false});
+    }
+    contElem.addEventListener("pointerdown", onPointerdown, {passive: false});
 }
 
 function checkIntersections(selectAreaElem, contElem, selectableElems) {
@@ -101,3 +102,17 @@ function isRectanglesIntersected(r1, r2) {
              r1.y + r1.height < r2.y ||
              r2.y + r2.height < r1.y);
 }
+
+/*
+    contElem.style.touchAction = "none";
+    contElem.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+        if (contElem.style.touchAction === "none") {
+            contElem.style.touchAction = "";
+            contElem.removeEventListener("pointerdown", onPointerdown);
+        } else {
+            contElem.style.touchAction = "none";
+            contElem.addEventListener("pointerdown", onPointerdown, {passive: false});
+        }
+    });
+ */
