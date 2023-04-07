@@ -24,7 +24,7 @@ export function dragSelect(contElem) {
         selectableElems.forEach(elem => elem.classList.remove("drag-selected"));
 
         let lastPointerEvent;
-        function resize(event) {
+        function resizeArea(event) {
             console.log(event);
             event.pointerId ? (lastPointerEvent = event) : (event = lastPointerEvent);
 
@@ -52,11 +52,11 @@ export function dragSelect(contElem) {
                 }, null, " ");
             }
         }
-        addEventListener("scroll", resize, {capture: true, passive: true});
-        contElem.addEventListener("pointermove", resize);
+        addEventListener("scroll", resizeArea, {capture: true, passive: true});
+        contElem.addEventListener("pointermove", resizeArea);
         contElem.addEventListener("lostpointercapture", () => {
-            contElem.removeEventListener("pointermove", resize);
-            removeEventListener("scroll", resize, {capture: true});
+            contElem.removeEventListener("pointermove", resizeArea);
+            removeEventListener("scroll", resizeArea, {capture: true});
             areaElem.remove();
         }, {once: true});
     }
