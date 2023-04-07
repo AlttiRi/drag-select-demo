@@ -6,10 +6,12 @@ const debug4 = document.querySelector(".debug-4");
 
 export function dragSelect(contElem) {
     contElem.style.position = "relative";
+    enableTouchSupport(contElem);
     function onPointerdown(event) {
-        if (event.target !== event.currentTarget || event.offsetX > event.target.clientWidth) {
-            return;
-        }
+        if (event.target !== event.currentTarget     ||
+            event.offsetX > event.target.clientWidth || event.offsetY > event.target.clientHeight ||
+            event.pointerType === "touch" && contElem.style.touchAction !== "none"
+        ) { return; }
         event.preventDefault();
         contElem.setPointerCapture(event.pointerId);
 
@@ -17,7 +19,7 @@ export function dragSelect(contElem) {
         const x1 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
         const y1 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
 
-        const areaElem = createAreaAt(x1, y1);
+        const areaElem = createEmptyAreaAt(x1, y1);
         contElem.append(areaElem);
 
         const selectableElems = [...document.querySelectorAll(".drag-selectable")];
@@ -80,11 +82,9 @@ function checkIntersections(selectAreaElem, contElem, selectableElems) {
     }
 }
 
-function createAreaAt(x, y) {
+function createEmptyAreaAt(x, y) {
     const areaElem = document.createElement("div");
     areaElem.style.position = "absolute";
-    areaElem.style.width  = "0";
-    areaElem.style.height = "0";
     areaElem.style.left = x + "px";
     areaElem.style.top  = y + "px";
     areaElem.classList.add("drag-select-area");
@@ -97,22 +97,16 @@ function getRect(elem) {
 }
 
 function isRectanglesIntersected(r1, r2) {
-    return !(r1.x + r1.width  < r2.x ||
-             r2.x + r2.width  < r1.x ||
-             r1.y + r1.height < r2.y ||
-             r2.y + r2.height < r1.y);
+    return !(r1.x + r1.width < r2.x || r1.y + r1.height < r2.y ||
+             r2.x + r2.width < r1.x || r2.y + r2.height < r1.y);
 }
 
-/*
-    contElem.style.touchAction = "none";
-    contElem.addEventListener("contextmenu", (event) => {
+function enableTouchSupport(contElem) {
+    let timerId;
+    contElem.addEventListener("pointerdown", (event) => {
         event.preventDefault();
-        if (contElem.style.touchAction === "none") {
-            contElem.style.touchAction = "";
-            contElem.removeEventListener("pointerdown", onPointerdown);
-        } else {
-            contElem.style.touchAction = "none";
-            contElem.addEventListener("pointerdown", onPointerdown, {passive: false});
-        }
+        clearTimeout(timerId);
+        setTimeout(() => contElem.style.touchAction = "none", 50);
+        timerId = setTimeout(() => contElem.style.touchAction = "", 400);
     });
- */
+}
