@@ -102,7 +102,7 @@ function isRectanglesIntersected(r1, r2) {
 }
 
 function enableTouchSupport(contElem) {
-    if (contElem.style.touchAction === "none") { return; }
+    if (getComputedStyle(contElem)["touch-action"] === "none") { return; }
     let timerId;
     contElem.addEventListener("pointerdown", (event) => {
         event.preventDefault();
