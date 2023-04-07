@@ -7,6 +7,7 @@ const debug4 = document.querySelector(".debug-4");
 export function dragSelect(contElem) {
     contElem.style.position = "relative";
     enableTouchSupport(contElem);
+    contElem.addEventListener("pointerdown", onPointerdown, {passive: false});
     function onPointerdown(event) {
         if (event.target !== event.currentTarget     ||
             event.offsetX > event.target.clientWidth || event.offsetY > event.target.clientHeight ||
@@ -62,7 +63,6 @@ export function dragSelect(contElem) {
             areaElem.remove();
         }, {once: true});
     }
-    contElem.addEventListener("pointerdown", onPointerdown, {passive: false});
 }
 
 function checkIntersections(selectAreaElem, contElem, selectableElems) {
