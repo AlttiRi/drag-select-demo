@@ -51,6 +51,10 @@ export function dragSelect(contElem) {
                 debug4.textContent = JSON.stringify({
                     "clientX": event.clientX,
                     "clientY": event.clientY,
+                    "left": areaElem.style.left,
+                    "top": areaElem.style.top,
+                    "width": areaElem.style.width,
+                    "height": areaElem.style.height,
                 }, null, " ");
             }
         }
