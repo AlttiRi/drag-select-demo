@@ -9,15 +9,15 @@ export function dragSelect(contElem) {
     enableTouchSupport(contElem);
     contElem.addEventListener("pointerdown", onPointerdown, {passive: false});
     function onPointerdown(event) {
-        const onScrollBar = event.offsetX > event.target.clientWidth || event.offsetY > event.target.clientHeight;
-        const unsupportedTouch = event.pointerType === "touch" && getComputedStyle(contElem)["touch-action"] !== "none";
-        if (event.target !== event.currentTarget || onScrollBar || unsupportedTouch) { return; }
-        event.preventDefault();
-        contElem.setPointerCapture(event.pointerId);
-
         const contRect = getRect(contElem);
         const x1 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
         const y1 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
+
+        const onScrollOrBorder = x1 <= 0 || y1 <= 0 || x1 >= contElem.scrollWidth || y1 >= contElem.scrollHeight;
+        const unsupportedTouch = event.pointerType === "touch" && getComputedStyle(contElem)["touch-action"] !== "none";
+        if (event.target !== event.currentTarget || unsupportedTouch || onScrollOrBorder) { return; }
+        event.preventDefault();
+        contElem.setPointerCapture(event.pointerId);
 
         const areaElem = createEmptyAreaAt(x1, y1);
         contElem.append(areaElem);
