@@ -31,8 +31,10 @@ export function dragSelect(contElem) {
             event.type !== "scroll" ? (lastPointerEvent = event) : (event = lastPointerEvent);
 
             const contRect = getRect(contElem);
-            const x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
-            const y2 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
+            let x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
+            let y2 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
+            x2 = Math.max(0, Math.min(contElem.scrollWidth, x2));
+            y2 = Math.max(0, Math.min(contElem.scrollHeight, y2));
             areaElem.style.left   = Math.min(x1, x2) + "px";
             areaElem.style.top    = Math.min(y1, y2) + "px";
             areaElem.style.width  = Math.abs(x2 - x1) + "px";
