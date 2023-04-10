@@ -13,7 +13,8 @@ export function dragSelect(contElem) {
         const x1 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
         const y1 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
 
-        const onScrollOrBorder = x1 <= 0 || y1 <= 0 || x1 >= contElem.scrollWidth || y1 >= contElem.scrollHeight;
+        const onScrollOrBorder = x1 <= 0 || y1 <= 0 ||
+            x1 >= contElem.clientWidth + contElem.scrollLeft || y1 >= contElem.clientHeight + contElem.scrollTop;
         const unsupportedTouch = event.pointerType === "touch" && getComputedStyle(contElem)["touch-action"] !== "none";
         if (event.target !== event.currentTarget || unsupportedTouch || onScrollOrBorder) { return; }
         event.preventDefault();
