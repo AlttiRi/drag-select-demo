@@ -13,10 +13,13 @@ export function dragSelect(contElem) {
         const x1 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
         const y1 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
 
-        const onScrollOrBorder = x1 <= 0 || y1 <= 0 ||
+        const rtlLeftOffset = contElem.scrollLeft < 0 ? contElem.scrollLeft : 0;
+        const rtlWidthOffset = getComputedStyle(contElem)["direction"] === "rtl" ? contElem.scrollWidth - contElem.clientWidth : 0;
+
+        const onScrollOrBorder = x1 <= 0 + rtlLeftOffset || y1 <= 0 ||
             x1 >= contElem.clientWidth + contElem.scrollLeft || y1 >= contElem.clientHeight + contElem.scrollTop;
         const unsupportedTouch = event.pointerType === "touch" && getComputedStyle(contElem)["touch-action"] !== "none";
-        if (event.target !== event.currentTarget || unsupportedTouch || onScrollOrBorder) { return; }
+        if (/*event.target !== event.currentTarget || */unsupportedTouch || onScrollOrBorder) { return; }
         event.preventDefault();
         contElem.setPointerCapture(event.pointerId);
 
@@ -34,7 +37,7 @@ export function dragSelect(contElem) {
             const contRect = getRect(contElem);
             let x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
             let y2 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
-            x2 = Math.max(0, Math.min(contElem.scrollWidth,  x2));
+            x2 = Math.max(0 - rtlWidthOffset, Math.min(contElem.scrollWidth - rtlWidthOffset, x2));
             y2 = Math.max(0, Math.min(contElem.scrollHeight, y2));
             areaElem.style.left   = Math.min(x1, x2) + "px";
             areaElem.style.top    = Math.min(y1, y2) + "px";
