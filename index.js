@@ -13,12 +13,13 @@ export function dragSelect(contElem) {
         const x1 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
         const y1 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
 
+        const contElemStyles = getComputedStyle(contElem);
         const rtlLeftOffset = contElem.scrollLeft < 0 ? contElem.scrollLeft : 0;
-        const rtlWidthOffset = getComputedStyle(contElem)["direction"] === "rtl" ? contElem.scrollWidth - contElem.clientWidth : 0;
+        const rtlWidthOffset = contElemStyles["direction"] === "rtl" ? contElem.scrollWidth - contElem.clientWidth : 0;
 
         const onScrollOrBorder = x1 <= 0 + rtlLeftOffset || y1 <= 0 ||
             x1 >= contElem.clientWidth + contElem.scrollLeft || y1 >= contElem.clientHeight + contElem.scrollTop;
-        const unsupportedTouch = event.pointerType === "touch" && getComputedStyle(contElem)["touch-action"] !== "none";
+        const unsupportedTouch = event.pointerType === "touch" && contElemStyles["touch-action"] !== "none";
         if (/*event.target !== event.currentTarget || */unsupportedTouch || onScrollOrBorder) { return; }
         event.preventDefault();
         contElem.setPointerCapture(event.pointerId);
