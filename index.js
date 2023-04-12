@@ -38,8 +38,8 @@ export function dragSelect(contElem) {
             const contRect = getRect(contElem);
             let x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
             let y2 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
-            x2 = Math.max(0 - rtlWidthOffset, Math.min(contElem.scrollWidth - rtlWidthOffset, x2));
-            y2 = Math.max(0, Math.min(contElem.scrollHeight, y2));
+            x2 = Math.max(0 - rtlWidthOffset, contElem.scrollLeft, Math.min(contElem.scrollWidth - rtlWidthOffset, x2, contElem.clientWidth + contElem.scrollLeft));
+            y2 = Math.max(0, contElem.scrollTop, Math.min(contElem.scrollHeight, y2, contElem.clientHeight + contElem.scrollTop));
             areaElem.style.left   = Math.min(x1, x2) + "px";
             areaElem.style.top    = Math.min(y1, y2) + "px";
             areaElem.style.width  = Math.abs(x2 - x1) + "px";
