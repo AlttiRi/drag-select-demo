@@ -20,14 +20,14 @@ export function dragSelect(contElem) {
         const onScrollOrBorder = x1 <= 0 + rtlLeftOffset || y1 <= 0 ||
             x1 >= contElem.clientWidth + contElem.scrollLeft || y1 >= contElem.clientHeight + contElem.scrollTop;
         const unsupportedTouch = event.pointerType === "touch" && contElemStyles["touch-action"] !== "none";
-        if (/*event.target !== event.currentTarget || */unsupportedTouch || onScrollOrBorder) { return; }
+        if (event.target.closest(".drag-selectable") || unsupportedTouch || onScrollOrBorder) { return; }
         event.preventDefault();
         contElem.setPointerCapture(event.pointerId);
 
         const areaElem = createEmptyAreaAt(x1, y1);
         contElem.append(areaElem);
 
-        const selectableElems = [...document.querySelectorAll(".drag-selectable")];
+        const selectableElems = [...contElem.querySelectorAll(".drag-selectable")];
         selectableElems.forEach(elem => elem.classList.remove("drag-selected"));
 
         let lastPointerEvent;
