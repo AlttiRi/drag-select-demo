@@ -71,17 +71,17 @@ function scrollElem(contElem, x2, y2) {
     y2 = Math.max(contElem.scrollTop, Math.min(y2, contElem.scrollTop + contElem.clientHeight));
 
     if (y2 === contElem.clientHeight + contElem.scrollTop) {
-        contElem.scrollTop += 2;
+        contElem.scrollTop += 3;
         y2 = contElem.clientHeight + contElem.scrollTop;
     } else if (y2 === contElem.scrollTop) {
-        contElem.scrollTop -= 2;
+        contElem.scrollTop -= 3;
         y2 = contElem.scrollTop;
     }
     if (x2 === contElem.clientWidth + contElem.scrollLeft) {
-        contElem.scrollLeft += 2;
+        contElem.scrollLeft += 3;
         x2 = contElem.clientWidth + contElem.scrollLeft;
     } else if (x2 === contElem.scrollLeft) {
-        contElem.scrollLeft -= 2;
+        contElem.scrollLeft -= 3;
         x2 = contElem.scrollLeft;
     }
     return [x2, y2];
