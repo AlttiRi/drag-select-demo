@@ -1,9 +1,3 @@
-const debug1 = document.querySelector(".debug-1");
-const debug2 = document.querySelector(".debug-2");
-const debug3 = document.querySelector(".debug-3");
-const debug4 = document.querySelector(".debug-4");
-
-
 export function dragSelect(contElem) {
     contElem.style.position = "relative";
     enableTouchSupport(contElem);
@@ -77,24 +71,7 @@ export function dragSelect(contElem) {
             areaElem.style.height = Math.abs(y2 - y1) + "px";
             checkIntersections(areaElem, contElem, selectableElems);
 
-            {
-                debug2.textContent = JSON.stringify(
-                    ["contElemRect:", getRect(contElem)], null, " ");
-                debug3.textContent = JSON.stringify({
-                    "contElem.scrollLeft": contElem.scrollLeft,
-                    "contElem.scrollTop":  contElem.scrollTop,
-                    "contElem.clientLeft": contElem.clientLeft,
-                    "contElem.clientTop":  contElem.clientTop,
-                }, null, " ");
-                debug4.textContent = JSON.stringify({
-                    "clientX": event.clientX,
-                    "clientY": event.clientY,
-                    "left": areaElem.style.left,
-                    "top": areaElem.style.top,
-                    "width": areaElem.style.width,
-                    "height": areaElem.style.height,
-                }, null, " ");
-            }
+            debug(contElem, areaElem, event);
         }
         addEventListener("scroll", resizeAreaPerFrame, {capture: true, passive: true});
         contElem.addEventListener("pointermove", resizeAreaPerFrame);
@@ -108,8 +85,6 @@ export function dragSelect(contElem) {
 
 function checkIntersections(selectAreaElem, contElem, selectableElems) {
     const areaRect = getRect(selectAreaElem);
-    debug1.textContent = JSON.stringify(["selectAreaElemRect", areaRect], null, " ");
-
     for (const itemElem of selectableElems) {
         const itemRect = getRect(itemElem);
         if (isRectanglesIntersected(
@@ -151,4 +126,31 @@ function enableTouchSupport(contElem) {
         setTimeout(() => contElem.style.touchAction = "none", 0);
         timerId = setTimeout(() => contElem.style.touchAction = "", 400);
     });
+}
+
+
+
+function debug(contElem, areaElem, event) {
+    const debug1 = document.querySelector(".debug-1");
+    const debug2 = document.querySelector(".debug-2");
+    const debug3 = document.querySelector(".debug-3");
+    const debug4 = document.querySelector(".debug-4");
+
+    debug1.textContent = JSON.stringify(["selectAreaElemRect", getRect(areaElem)], null, " ");
+    debug2.textContent = JSON.stringify(
+        ["contElemRect:", getRect(contElem)], null, " ");
+    debug3.textContent = JSON.stringify({
+        "contElem.scrollLeft": contElem.scrollLeft,
+        "contElem.scrollTop":  contElem.scrollTop,
+        "contElem.clientLeft": contElem.clientLeft,
+        "contElem.clientTop":  contElem.clientTop,
+    }, null, " ");
+    debug4.textContent = JSON.stringify({
+        "clientX": event.clientX,
+        "clientY": event.clientY,
+        "left": areaElem.style.left,
+        "top": areaElem.style.top,
+        "width": areaElem.style.width,
+        "height": areaElem.style.height,
+    }, null, " ");
 }
