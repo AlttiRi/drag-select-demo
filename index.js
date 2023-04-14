@@ -68,7 +68,7 @@ export function dragSelect(contElem) {
 
 function scrollElem(contElem, x2, y2) {
     x2 = Math.max(contElem.scrollLeft, Math.min(x2, contElem.scrollLeft + contElem.clientWidth));
-    y2 = Math.max(contElem.scrollTop, Math.min(y2, contElem.scrollTop + contElem.clientHeight));
+    y2 = Math.max(contElem.scrollTop,  Math.min(y2, contElem.scrollTop + contElem.clientHeight));
 
     if (x2 === contElem.clientWidth + contElem.scrollLeft) {
         contElem.scrollLeft += 3;
