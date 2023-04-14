@@ -39,27 +39,6 @@ export function dragSelect(contElem) {
             enqueue(() => { resizeArea(event); });
         }
 
-        function scrollElem(contElem, x2, y2) {
-            x2 = Math.max(contElem.scrollLeft, Math.min(x2, contElem.scrollLeft + contElem.clientWidth));
-            y2 = Math.max(contElem.scrollTop, Math.min(y2, contElem.scrollTop + contElem.clientHeight));
-
-            if (y2 === contElem.clientHeight + contElem.scrollTop) {
-                contElem.scrollTop += 2;
-                y2 = contElem.clientHeight + contElem.scrollTop;
-            } else if (y2 === contElem.scrollTop) {
-                contElem.scrollTop -= 2;
-                y2 = contElem.scrollTop;
-            }
-            if (x2 === contElem.clientWidth + contElem.scrollLeft) {
-                contElem.scrollLeft += 2;
-                x2 = contElem.clientWidth + contElem.scrollLeft;
-            } else if (x2 === contElem.scrollLeft) {
-                contElem.scrollLeft -= 2;
-                x2 = contElem.scrollLeft;
-            }
-            return [x2, y2];
-        }
-
         function resizeArea(event) {
             const contRect = getRect(contElem);
             let x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
@@ -84,6 +63,28 @@ export function dragSelect(contElem) {
             enqueue(() => { areaElem.remove(); });
         }, {once: true});
     }
+}
+
+
+function scrollElem(contElem, x2, y2) {
+    x2 = Math.max(contElem.scrollLeft, Math.min(x2, contElem.scrollLeft + contElem.clientWidth));
+    y2 = Math.max(contElem.scrollTop, Math.min(y2, contElem.scrollTop + contElem.clientHeight));
+
+    if (y2 === contElem.clientHeight + contElem.scrollTop) {
+        contElem.scrollTop += 2;
+        y2 = contElem.clientHeight + contElem.scrollTop;
+    } else if (y2 === contElem.scrollTop) {
+        contElem.scrollTop -= 2;
+        y2 = contElem.scrollTop;
+    }
+    if (x2 === contElem.clientWidth + contElem.scrollLeft) {
+        contElem.scrollLeft += 2;
+        x2 = contElem.clientWidth + contElem.scrollLeft;
+    } else if (x2 === contElem.scrollLeft) {
+        contElem.scrollLeft -= 2;
+        x2 = contElem.scrollLeft;
+    }
+    return [x2, y2];
 }
 
 function checkIntersections(selectAreaElem, contElem, selectableElems) {
