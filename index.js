@@ -40,6 +40,9 @@ export function dragSelect(contElem) {
         }
 
         function scrollElem(contElem, x2, y2) {
+            x2 = Math.max(contElem.scrollLeft, Math.min(x2, contElem.scrollLeft + contElem.clientWidth));
+            y2 = Math.max(contElem.scrollTop, Math.min(y2, contElem.scrollTop + contElem.clientHeight));
+
             if (y2 === contElem.clientHeight + contElem.scrollTop) {
                 contElem.scrollTop += 2;
                 y2 = contElem.clientHeight + contElem.scrollTop;
@@ -61,8 +64,8 @@ export function dragSelect(contElem) {
             const contRect = getRect(contElem);
             let x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
             let y2 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
-            x2 = Math.max(0 - rtlWidthOffset, contElem.scrollLeft, Math.min(contElem.scrollWidth - rtlWidthOffset, x2, contElem.clientWidth + contElem.scrollLeft));
-            y2 = Math.max(0, contElem.scrollTop, Math.min(contElem.scrollHeight, y2, contElem.clientHeight + contElem.scrollTop));
+            x2 = Math.max(0 - rtlWidthOffset, Math.min(x2, contElem.scrollWidth - rtlWidthOffset));
+            y2 = Math.max(0, Math.min(y2, contElem.scrollHeight));
             [x2, y2] = scrollElem(contElem, x2, y2);
 
             areaElem.style.left   = Math.min(x1, x2) + "px";
