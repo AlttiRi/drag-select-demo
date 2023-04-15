@@ -65,32 +65,8 @@ export function dragSelect(contElem) {
     }
 }
 
-let avgFrameTime;
-setTimeout(async () => {
-    avgFrameTime = await getAvgFrameTime();
-    console.log("avgFrameTime", avgFrameTime);
-}, 200);
-
-function scrollElem(contElem, x2, y2) {
-    x2 = cellNum(x2, contElem.scrollLeft, contElem.scrollLeft + contElem.clientWidth);
-    y2 = cellNum(y2, contElem.scrollTop, contElem.scrollTop + contElem.clientHeight);
-
-    const diff = Math.ceil(600 * avgFrameTime / 1000);
-    if (x2 === contElem.clientWidth + contElem.scrollLeft) {
-        contElem.scrollLeft += diff;
-        x2 = contElem.clientWidth + contElem.scrollLeft;
-    } else if (x2 === contElem.scrollLeft) {
-        contElem.scrollLeft -= diff;
-        x2 = contElem.scrollLeft;
-    }
-    if (y2 === contElem.clientHeight + contElem.scrollTop) {
-        contElem.scrollTop += diff;
-        y2 = contElem.clientHeight + contElem.scrollTop;
-    } else if (y2 === contElem.scrollTop) {
-        contElem.scrollTop -= diff;
-        y2 = contElem.scrollTop;
-    }
-    return [x2, y2];
+function cellNum(num, min, max) {
+    return Math.max(min, Math.min(num, max));
 }
 
 function checkIntersections(selectAreaElem, contElem, selectableElems) {
@@ -106,10 +82,6 @@ function checkIntersections(selectAreaElem, contElem, selectableElems) {
             itemElem.classList.remove("drag-selected");
         }
     }
-}
-
-function cellNum(num, min, max) {
-    return Math.max(min, Math.min(num, max));
 }
 
 function createEmptyAreaAt(x, y) {
@@ -142,6 +114,34 @@ function enableTouchSupport(contElem) {
     });
 }
 
+
+let avgFrameTime;
+setTimeout(async () => {
+    avgFrameTime = await getAvgFrameTime();
+    console.log("avgFrameTime", avgFrameTime);
+}, 200);
+
+function scrollElem(contElem, x2, y2) {
+    x2 = cellNum(x2, contElem.scrollLeft, contElem.scrollLeft + contElem.clientWidth);
+    y2 = cellNum(y2, contElem.scrollTop, contElem.scrollTop + contElem.clientHeight);
+
+    const diff = Math.ceil(600 * avgFrameTime / 1000);
+    if (x2 === contElem.clientWidth + contElem.scrollLeft) {
+        contElem.scrollLeft += diff;
+        x2 = contElem.clientWidth + contElem.scrollLeft;
+    } else if (x2 === contElem.scrollLeft) {
+        contElem.scrollLeft -= diff;
+        x2 = contElem.scrollLeft;
+    }
+    if (y2 === contElem.clientHeight + contElem.scrollTop) {
+        contElem.scrollTop += diff;
+        y2 = contElem.clientHeight + contElem.scrollTop;
+    } else if (y2 === contElem.scrollTop) {
+        contElem.scrollTop -= diff;
+        y2 = contElem.scrollTop;
+    }
+    return [x2, y2];
+}
 
 async function getAvgFrameTime() {
     return new Promise(resolve => {
