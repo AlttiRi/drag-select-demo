@@ -11,7 +11,7 @@
             margin: 0;
         }
         .main {
-            max-height: 444px;
+            height: 444px;
             width: 444px;
             overflow: auto;
             gap: 8px;
@@ -21,7 +21,7 @@
             padding: 8px;
         }
         .main-wrapper {
-
+            border: 2px solid gray;
         }
         .main-1 {
             display: flex;
@@ -34,6 +34,18 @@
         .main-1 .drag-selectable {
             width: 50px;
             height: 50px;
+        }
+        .main-4 .drag-selectable-wrap {
+            margin: 0;
+            flex-wrap: nowrap;
+            justify-content: start;
+            height: 100%;
+        }
+        .main-4 .drag-selectable {
+            flex-shrink: 0;
+            flex-grow: 0;
+            width: 50px;
+            height: 150px;
         }
 
         .debug-wrapper {
@@ -89,17 +101,19 @@
       display: flex;
       flex-wrap: wrap;">
 
-    <div class="main main-1"></div>
-    <div class="main main-2"></div>
-    <div class="main main-3" style="direction: rtl;"></div>
+    <div class="main main-1" title="No scrolls"></div>
+    <div class="main main-2" title="With scrolls"></div>
+    <div class="main main-3" title="With scrolls and RTL" style="direction: rtl;"></div>
 
+    <div class="main main-4" title="With h-scroll and RTL" style="direction: rtl;"></div>
 
-    <div class="main-wrapper" style="height: 400px; overflow-y: scroll;">
-        <div class="main main-4"></div>
-    </div>
-    <div class="main-wrapper" style="height: 400px; overflow-y: scroll; direction: rtl;">
+    <div class="main-wrapper" title="With scrolls, outer scrolls" style="height: 400px; overflow-y: scroll;">
         <div class="main main-5"></div>
     </div>
+    <div class="main-wrapper" title="With scrolls, outer scrolls and RTL" style="height: 400px; overflow-y: scroll; direction: rtl;">
+        <div class="main main-6"></div>
+    </div>
+
 </div>
 
 <script type="module">
@@ -109,13 +123,13 @@
     initHtml(contElem1, 20);
     dragSelect(contElem1);
 
-    for (let i = 2; i <= 5; i++) {
+    for (let i = 2; i <= 6; i++) {
         const contElem = document.querySelector(`.main-${i}`);
         initHtml(contElem);
         dragSelect(contElem);
     }
 
-    function initHtml(insertPlace, count = 50) {
+    function initHtml(insertPlace, count = 80) {
         const divWrap = document.createElement("div");
         divWrap.classList.add("drag-selectable-wrap");
         for (let i = 0; i < count; i++) {
