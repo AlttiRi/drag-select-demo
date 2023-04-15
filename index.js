@@ -35,7 +35,7 @@ export function dragSelect(contElem, {
         onStart?.(selectableElems);
 
         let lastTask = null, reqId = null;
-        function enqueue(task) {
+        function enqueueTask(task) {
             lastTask = task;
             if (reqId) { return; }
             reqId = requestAnimationFrame(() => { reqId = null; lastTask(); });
@@ -45,7 +45,7 @@ export function dragSelect(contElem, {
         function resizeAreaPerFrame(event) {
             if (event.type === "scroll" && !lastPointerEvent) { return; }
             event.type !== "scroll" ? (lastPointerEvent = event) : (event = lastPointerEvent);
-            enqueue(() => { resizeArea(event); });
+            enqueueTask(() => { resizeArea(event); });
         }
 
         function resizeArea(event) {
@@ -68,7 +68,7 @@ export function dragSelect(contElem, {
         contElem.addEventListener("lostpointercapture", () => {
             contElem.removeEventListener("pointermove", resizeAreaPerFrame);
             removeEventListener("scroll", resizeAreaPerFrame, {capture: true});
-            enqueue(() => { areaElem.remove(); });
+            enqueueTask(() => { areaElem.remove(); });
         }, {once: true});
     }
 }
