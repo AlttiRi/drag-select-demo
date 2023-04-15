@@ -69,18 +69,19 @@ function scrollElem(contElem, x2, y2) {
     x2 = cellNum(x2, contElem.scrollLeft, contElem.scrollLeft + contElem.clientWidth);
     y2 = cellNum(y2, contElem.scrollTop, contElem.scrollTop + contElem.clientHeight);
 
+    const diff = 3;
     if (x2 === contElem.clientWidth + contElem.scrollLeft) {
-        contElem.scrollLeft += 3;
+        contElem.scrollLeft += diff;
         x2 = contElem.clientWidth + contElem.scrollLeft;
     } else if (x2 === contElem.scrollLeft) {
-        contElem.scrollLeft -= 3;
+        contElem.scrollLeft -= diff;
         x2 = contElem.scrollLeft;
     }
     if (y2 === contElem.clientHeight + contElem.scrollTop) {
-        contElem.scrollTop += 3;
+        contElem.scrollTop += diff;
         y2 = contElem.clientHeight + contElem.scrollTop;
     } else if (y2 === contElem.scrollTop) {
-        contElem.scrollTop -= 3;
+        contElem.scrollTop -= diff;
         y2 = contElem.scrollTop;
     }
     return [x2, y2];
