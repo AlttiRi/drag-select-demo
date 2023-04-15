@@ -31,7 +31,7 @@ It's the target element to make elements within it selectable.
 It's also the target for the scrolling by the selecting area if `contElem`'s inner content size is bigger than
 `contElem`'s view port _(by changing `contElem.scrollLeft` and `contElem.scrollTop` values)_.
 
-The secong argument is optional, is an object with follow keys: `onStart`, `onUpdate`, `itemSelector`, `areaClassName`.
+The second argument is optional, is an object with follow keys: `onStart`, `onUpdate`, `itemSelector`, `areaClassName`.
 - `areaClassName` — a class name for the selecting area, by default, `"drag-select-area"`;
 - `itemSelector` — a selector for items which should be selectable, by default, `.drag-selectable"`;
 - `onUpdate` — on the selecting area resize/scrolling event callback, by default, it adds `"drag-selected"` class to the selected elements;
