@@ -6,4 +6,4 @@ It's not a library, but this demo can be used as a starting point if you need to
 
 See [`index.js`](https://github.com/AlttiRi/drag-select-demo/blob/master/index.js) for the code.
 
-![image](https://user-images.githubusercontent.com/16310547/232238100-e2facb65-9895-49fa-b45c-f6c1abcd3148.png)
+![Screenshot](https://user-images.githubusercontent.com/16310547/232238704-9b0659f1-d8f1-42d9-a1e5-63130a194145.png)
