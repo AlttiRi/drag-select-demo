@@ -43,8 +43,8 @@ export function dragSelect(contElem) {
             const contRect = getRect(contElem);
             let x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
             let y2 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
-            x2 = Math.max(0 - rtlWidthOffset, Math.min(x2, contElem.scrollWidth - rtlWidthOffset));
-            y2 = Math.max(0, Math.min(y2, contElem.scrollHeight));
+            x2 = cellNum(x2, 0 - rtlWidthOffset, contElem.scrollWidth - rtlWidthOffset);
+            y2 = cellNum(y2, 0, contElem.scrollHeight);
             [x2, y2] = scrollElem(contElem, x2, y2);
 
             areaElem.style.left   = Math.min(x1, x2) + "px";
@@ -65,10 +65,9 @@ export function dragSelect(contElem) {
     }
 }
 
-
 function scrollElem(contElem, x2, y2) {
-    x2 = Math.max(contElem.scrollLeft, Math.min(x2, contElem.scrollLeft + contElem.clientWidth));
-    y2 = Math.max(contElem.scrollTop,  Math.min(y2, contElem.scrollTop + contElem.clientHeight));
+    x2 = cellNum(x2, contElem.scrollLeft, contElem.scrollLeft + contElem.clientWidth);
+    y2 = cellNum(y2, contElem.scrollTop, contElem.scrollTop + contElem.clientHeight);
 
     if (x2 === contElem.clientWidth + contElem.scrollLeft) {
         contElem.scrollLeft += 3;
@@ -100,6 +99,10 @@ function checkIntersections(selectAreaElem, contElem, selectableElems) {
             itemElem.classList.remove("drag-selected");
         }
     }
+}
+
+function cellNum(num, min, max) {
+    return Math.max(min, Math.min(num, max));
 }
 
 function createEmptyAreaAt(x, y) {
