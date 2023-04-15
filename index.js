@@ -45,7 +45,7 @@ export function dragSelect(contElem) {
             const contRect = getRect(contElem);
             let x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
             let y2 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
-            [x2, y2] = cellPointIntoElem(contElem, x2, y2);
+         // [x2, y2] = cellPointIntoElem(contElem, x2, y2);
             [x2, y2] = scrollElem(contElem, x2, y2);
 
             areaElem.style.left   = Math.min(x1, x2) + "px";
