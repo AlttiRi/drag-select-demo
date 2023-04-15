@@ -150,21 +150,21 @@ function scrollElem(contElem, x2, y2) {
     let [x, y] = cellPointIntoElemViewport(contElem, x2, y2);
 
     const diff = Math.ceil(500 * (globalThis.frameTime || 12) / 1000);
-    const xdiff = Math.round(diff * cellNum(Math.abs((x2 - x) / 50), 1, 5));
-    const ydiff = Math.round(diff * cellNum(Math.abs((y2 - y) / 50), 1, 5));
+    const xDiffAccelerated = Math.round(diff * cellNum(Math.abs((x2 - x) / 50), 1, 5));
+    const yDiffAccelerated = Math.round(diff * cellNum(Math.abs((y2 - y) / 50), 1, 5));
 
     if (x === contElem.clientWidth + contElem.scrollLeft) {
-        contElem.scrollLeft += xdiff;
+        contElem.scrollLeft += xDiffAccelerated;
         x = contElem.clientWidth + contElem.scrollLeft;
     } else if (x === contElem.scrollLeft) {
-        contElem.scrollLeft -= xdiff;
+        contElem.scrollLeft -= xDiffAccelerated;
         x = contElem.scrollLeft;
     }
     if (y === contElem.clientHeight + contElem.scrollTop) {
-        contElem.scrollTop += ydiff;
+        contElem.scrollTop += yDiffAccelerated;
         y = contElem.clientHeight + contElem.scrollTop;
     } else if (y === contElem.scrollTop) {
-        contElem.scrollTop -= ydiff;
+        contElem.scrollTop -= yDiffAccelerated;
         y = contElem.scrollTop;
     }
     return [x, y];
