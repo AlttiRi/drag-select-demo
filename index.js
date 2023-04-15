@@ -1,3 +1,5 @@
+import {debugInfo} from "./debug.js";
+
 const itemSelector  = ".drag-selectable";
 const selectedItemClass = "drag-selected";
 
@@ -53,7 +55,7 @@ export function dragSelect(contElem) {
             areaElem.style.height = Math.abs(y2 - y1) + "px";
             checkIntersections(areaElem, contElem, selectableElems);
 
-            debug(contElem, areaElem, event);
+            debugInfo(contElem, areaElem, event);
         }
         addEventListener("scroll", resizeAreaPerFrame, {capture: true, passive: true});
         contElem.addEventListener("pointermove", resizeAreaPerFrame);
@@ -184,30 +186,4 @@ async function getAvgFrameTime(frames = 10) {
             }
         );
     });
-}
-
-
-function debug(contElem, areaElem, event) {
-    const debug1 = document.querySelector(".debug-1");
-    const debug2 = document.querySelector(".debug-2");
-    const debug3 = document.querySelector(".debug-3");
-    const debug4 = document.querySelector(".debug-4");
-
-    debug1.textContent = JSON.stringify(["selectAreaElemRect", getRect(areaElem)], null, " ");
-    debug2.textContent = JSON.stringify(
-        ["contElemRect:", getRect(contElem)], null, " ");
-    debug3.textContent = JSON.stringify({
-        "contElem.scrollLeft": contElem.scrollLeft,
-        "contElem.scrollTop":  contElem.scrollTop,
-        "contElem.clientLeft": contElem.clientLeft,
-        "contElem.clientTop":  contElem.clientTop,
-    }, null, " ");
-    debug4.textContent = JSON.stringify({
-        "clientX": event.clientX,
-        "clientY": event.clientY,
-        "left": areaElem.style.left,
-        "top": areaElem.style.top,
-        "width": areaElem.style.width,
-        "height": areaElem.style.height,
-    }, null, " ");
 }
