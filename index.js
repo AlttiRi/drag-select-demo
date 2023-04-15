@@ -1,6 +1,9 @@
+const itemSelector  = ".drag-selectable";
+const selectedItemClass = "drag-selected";
+
 export function dragSelect(contElem) {
     contElem.style.position = "relative";
-    enableTouchSupport(contElem);
+    enableTouchSupport(contElem, itemSelector);
     contElem.addEventListener("pointerdown", onPointerdown, {passive: false});
     function onPointerdown(event) {
         const contRect = getRect(contElem);
@@ -14,15 +17,15 @@ export function dragSelect(contElem) {
         const onScrollOrBorder = x1 <= 0 + rtlLeftOffset || y1 <= 0 ||
             x1 >= contElem.clientWidth + contElem.scrollLeft || y1 >= contElem.clientHeight + contElem.scrollTop;
         const unsupportedTouch = event.pointerType === "touch" && contElemStyles["touch-action"] !== "none";
-        if (event.target.closest(".drag-selectable") || unsupportedTouch || onScrollOrBorder) { return; }
+        if (isClickInside(event, itemSelector) || unsupportedTouch || onScrollOrBorder) { return; }
         event.preventDefault();
         contElem.setPointerCapture(event.pointerId);
 
         const areaElem = createEmptyAreaAt(x1, y1);
         contElem.append(areaElem);
 
-        const selectableElems = [...contElem.querySelectorAll(".drag-selectable")];
-        selectableElems.forEach(elem => elem.classList.remove("drag-selected"));
+        const selectableElems = [...contElem.querySelectorAll(itemSelector)];
+        selectableElems.forEach(elem => elem.classList.remove(selectedItemClass));
 
 
         let lastTask = null, reqId = null;
@@ -77,9 +80,9 @@ function checkIntersections(selectAreaElem, contElem, selectableElems) {
             {x: areaRect.x + contElem.scrollLeft, y: areaRect.y + contElem.scrollTop, width: areaRect.width, height: areaRect.height},
             {x: itemRect.x + contElem.scrollLeft, y: itemRect.y + contElem.scrollTop, width: itemRect.width, height: itemRect.height},
         )) {
-            itemElem.classList.add("drag-selected");
+            itemElem.classList.add(selectedItemClass);
         } else {
-            itemElem.classList.remove("drag-selected");
+            itemElem.classList.remove(selectedItemClass);
         }
     }
 }
@@ -103,10 +106,15 @@ function isRectanglesIntersected(r1, r2) {
              r2.x + r2.width < r1.x || r2.y + r2.height < r1.y);
 }
 
-function enableTouchSupport(contElem) {
-    if (getComputedStyle(contElem)["touch-action"] === "none") { return; }
+function isClickInside(event, selector) {
+    return event.target.closest(selector);
+}
+
+function enableTouchSupport(contElem, itemSelector) {
+    if (getComputedStyle(contElem)["touch-action"] === "none") { return; } // Already enabled
     let timerId;
     contElem.addEventListener("pointerdown", (event) => {
+        if (event.pointerType !== "touch" || isClickInside(event, itemSelector)) { return; }
         event.preventDefault();
         clearTimeout(timerId);
         setTimeout(() => contElem.style.touchAction = "none", 0);
