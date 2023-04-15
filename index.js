@@ -45,7 +45,6 @@ export function dragSelect(contElem) {
             const contRect = getRect(contElem);
             let x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
             let y2 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
-         // [x2, y2] = cellPointIntoElem(contElem, x2, y2);
             [x2, y2] = scrollElem(contElem, x2, y2);
 
             areaElem.style.left   = Math.min(x1, x2) + "px";
@@ -121,7 +120,7 @@ function enableTouchSupport(contElem, itemSelector) {
 }
 
 
-function cellPointIntoElem(contElem, x2, y2, rtlWidthOffset) {
+function cellPointIntoElem(contElem, x2, y2, rtlWidthOffset) { // [unused]
     if (rtlWidthOffset === undefined) {
         const iSRightToLeft = getComputedStyle(contElem)["direction"] === "rtl"
         rtlWidthOffset = iSRightToLeft ? contElem.scrollWidth - contElem.clientWidth : 0;
@@ -138,24 +137,27 @@ function cellPointIntoElemViewport(contElem, x2, y2) {
 }
 
 function scrollElem(contElem, x2, y2) {
-    [x2, y2] = cellPointIntoElemViewport(contElem, x2, y2);
+    let [x, y] = cellPointIntoElemViewport(contElem, x2, y2);
 
-    const diff = Math.ceil(600 * (globalThis.frameTime || 12) / 1000);
-    if (x2 === contElem.clientWidth + contElem.scrollLeft) {
-        contElem.scrollLeft += diff;
-        x2 = contElem.clientWidth + contElem.scrollLeft;
-    } else if (x2 === contElem.scrollLeft) {
-        contElem.scrollLeft -= diff;
-        x2 = contElem.scrollLeft;
+    const diff = Math.ceil(500 * (globalThis.frameTime || 12) / 1000);
+    const xdiff = Math.round(diff * cellNum(Math.abs((x2 - x) / 50), 1, 5));
+    const ydiff = Math.round(diff * cellNum(Math.abs((y2 - y) / 50), 1, 5));
+
+    if (x === contElem.clientWidth + contElem.scrollLeft) {
+        contElem.scrollLeft += xdiff;
+        x = contElem.clientWidth + contElem.scrollLeft;
+    } else if (x === contElem.scrollLeft) {
+        contElem.scrollLeft -= xdiff;
+        x = contElem.scrollLeft;
     }
-    if (y2 === contElem.clientHeight + contElem.scrollTop) {
-        contElem.scrollTop += diff;
-        y2 = contElem.clientHeight + contElem.scrollTop;
-    } else if (y2 === contElem.scrollTop) {
-        contElem.scrollTop -= diff;
-        y2 = contElem.scrollTop;
+    if (y === contElem.clientHeight + contElem.scrollTop) {
+        contElem.scrollTop += ydiff;
+        y = contElem.clientHeight + contElem.scrollTop;
+    } else if (y === contElem.scrollTop) {
+        contElem.scrollTop -= ydiff;
+        y = contElem.scrollTop;
     }
-    return [x2, y2];
+    return [x, y];
 }
 
 setTimeout(async () => {
