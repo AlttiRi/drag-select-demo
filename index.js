@@ -65,11 +65,17 @@ export function dragSelect(contElem) {
     }
 }
 
+let avgFrameTime;
+setTimeout(async () => {
+    avgFrameTime = await getAvgFrameTime();
+    console.log("avgFrameTime", avgFrameTime);
+}, 200);
+
 function scrollElem(contElem, x2, y2) {
     x2 = cellNum(x2, contElem.scrollLeft, contElem.scrollLeft + contElem.clientWidth);
     y2 = cellNum(y2, contElem.scrollTop, contElem.scrollTop + contElem.clientHeight);
 
-    const diff = 3;
+    const diff = Math.ceil(600 * avgFrameTime / 1000);
     if (x2 === contElem.clientWidth + contElem.scrollLeft) {
         contElem.scrollLeft += diff;
         x2 = contElem.clientWidth + contElem.scrollLeft;
@@ -136,6 +142,27 @@ function enableTouchSupport(contElem) {
     });
 }
 
+
+async function getAvgFrameTime() {
+    return new Promise(resolve => {
+        let time = Date.now();
+        let frameTimes = [];
+        let count = 12;
+        requestAnimationFrame(
+            function loop() {
+                const now = Date.now();
+                const frameTime = now - time;
+                frameTimes.push(frameTime)
+                time = now;
+                if (--count) {
+                    requestAnimationFrame(loop);
+                    return;
+                }
+                resolve(Math.round(frameTimes.slice(2).reduce((pre, acc) => pre + acc, 0) / 10));
+            }
+        );
+    });
+}
 
 
 function debug(contElem, areaElem, event) {
