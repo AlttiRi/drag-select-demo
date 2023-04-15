@@ -1,5 +1,3 @@
-import {debugInfo} from "./debug.js";
-
 const itemSelector  = ".drag-selectable";
 const selectedItemClass = "drag-selected";
 
@@ -55,7 +53,7 @@ export function dragSelect(contElem) {
             areaElem.style.height = Math.abs(y2 - y1) + "px";
             checkIntersections(areaElem, contElem, selectableElems);
 
-            debugInfo(contElem, areaElem, event);
+            globalThis.debugInfo?.(contElem, areaElem, event); // [debug-log]
         }
         addEventListener("scroll", resizeAreaPerFrame, {capture: true, passive: true});
         contElem.addEventListener("pointermove", resizeAreaPerFrame);

@@ -118,6 +118,9 @@
 
 <script type="module">
     import {dragSelect} from "./index.js";
+    import {debugInfo} from "./debug.js";
+
+    globalThis.debugInfo = debugInfo;
 
     const contElem1 = document.querySelector(".main-1");
     initHtml(contElem1, 20);
