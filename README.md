@@ -18,6 +18,8 @@ It's the relative short js demo, less than 200 lines of the code, but it has the
 - the selecting area celling in the target element's view port,
 - re-calculation is no more than once per one animation frame (`requestAnimationFrame`),
 - continues to work properly after an element resizing/moving,
+- ignores clicks on borders/scrolls,
+- properly displays the borders of the selecting area,
 - selectable items are interactive, they are continued to receive all events (text selecting, for example),
 - full touches support (use the double tap to start selecting),
 - rtl support (`direction: rtl;`).
