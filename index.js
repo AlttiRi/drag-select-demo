@@ -115,17 +115,16 @@ function enableTouchSupport(contElem) {
 }
 
 
-let avgFrameTime;
 setTimeout(async () => {
-    avgFrameTime = await getAvgFrameTime();
-    console.log("avgFrameTime", avgFrameTime);
+    globalThis.frameTime = await getAvgFrameTime();
+    console.log("frameTime", frameTime); // 7 for 144 FPS, 16 for 60 FPS
 }, 200);
 
 function scrollElem(contElem, x2, y2) {
     x2 = cellNum(x2, contElem.scrollLeft, contElem.scrollLeft + contElem.clientWidth);
     y2 = cellNum(y2, contElem.scrollTop, contElem.scrollTop + contElem.clientHeight);
 
-    const diff = Math.ceil(600 * avgFrameTime / 1000);
+    const diff = Math.ceil(600 * (globalThis.frameTime || 12) / 1000);
     if (x2 === contElem.clientWidth + contElem.scrollLeft) {
         contElem.scrollLeft += diff;
         x2 = contElem.clientWidth + contElem.scrollLeft;
@@ -143,11 +142,11 @@ function scrollElem(contElem, x2, y2) {
     return [x2, y2];
 }
 
-async function getAvgFrameTime() {
+async function getAvgFrameTime(frames = 10) {
     return new Promise(resolve => {
         let time = Date.now();
-        let frameTimes = [];
-        let count = 12;
+        let count = frames + 2;
+        const frameTimes = [];
         requestAnimationFrame(
             function loop() {
                 const now = Date.now();
@@ -158,7 +157,7 @@ async function getAvgFrameTime() {
                     requestAnimationFrame(loop);
                     return;
                 }
-                resolve(Math.round(frameTimes.slice(2).reduce((pre, acc) => pre + acc, 0) / 10));
+                resolve(Math.round(frameTimes.slice(2).reduce((pre, acc) => pre + acc, 0) / frames));
             }
         );
     });
