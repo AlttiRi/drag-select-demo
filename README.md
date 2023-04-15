@@ -8,6 +8,8 @@ See [`index.js`](https://github.com/AlttiRi/drag-select-demo/blob/master/index.j
 
 ![Screenshot](https://user-images.githubusercontent.com/16310547/232238704-9b0659f1-d8f1-42d9-a1e5-63130a194145.png)
 
+Drag-selecting is useful for web file explorers (like Dropbox, Mega, Google Drive),
+when you need to select only some files to check their total size / download them.
 
 ### Features
 
