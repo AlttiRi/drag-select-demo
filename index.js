@@ -115,11 +115,6 @@ function enableTouchSupport(contElem) {
 }
 
 
-setTimeout(async () => {
-    globalThis.frameTime = await getAvgFrameTime();
-    console.log("frameTime", frameTime); // 7 for 144 FPS, 16 for 60 FPS
-}, 200);
-
 function scrollElem(contElem, x2, y2) {
     x2 = cellNum(x2, contElem.scrollLeft, contElem.scrollLeft + contElem.clientWidth);
     y2 = cellNum(y2, contElem.scrollTop, contElem.scrollTop + contElem.clientHeight);
@@ -141,6 +136,11 @@ function scrollElem(contElem, x2, y2) {
     }
     return [x2, y2];
 }
+
+setTimeout(async () => {
+    globalThis.frameTime = await getAvgFrameTime();
+    console.log("frameTime", frameTime); // 7 for 144 FPS, 16 for 60 FPS
+}, 200);
 
 async function getAvgFrameTime(frames = 10) {
     return new Promise(resolve => {
