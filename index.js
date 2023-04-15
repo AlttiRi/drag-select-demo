@@ -1,7 +1,15 @@
-const itemSelector  = ".drag-selectable";
-const selectedItemClass = "drag-selected";
+function onUpdateDefault(intersected, nonIntersected, allElements) {
+    intersected.forEach(elem => elem.classList.add("drag-selected"));
+    nonIntersected.forEach(elem => elem.classList.remove("drag-selected"));
+}
+function onStartDefault(allElements) {
+    allElements.forEach(elem => elem.classList.remove("drag-selected"));
+}
 
-export function dragSelect(contElem) {
+export function dragSelect(contElem, {
+    onUpdate = onUpdateDefault, onStart = onStartDefault,
+    itemSelector = ".drag-selectable", areaClassName = "drag-select-area"
+} = {}) {
     contElem.style.position = "relative";
     enableTouchSupport(contElem, itemSelector);
     contElem.addEventListener("pointerdown", onPointerdown, {passive: false});
@@ -20,12 +28,11 @@ export function dragSelect(contElem) {
         event.preventDefault();
         contElem.setPointerCapture(event.pointerId);
 
-        const areaElem = createEmptyAreaAt(x1, y1);
+        const areaElem = createEmptyAreaAt(x1, y1, areaClassName);
         contElem.append(areaElem);
 
         const selectableElems = [...contElem.querySelectorAll(itemSelector)];
-        selectableElems.forEach(elem => elem.classList.remove(selectedItemClass));
-
+        onStart?.(selectableElems);
 
         let lastTask = null, reqId = null;
         function enqueue(task) {
@@ -51,9 +58,10 @@ export function dragSelect(contElem) {
             areaElem.style.top    = Math.min(y1, y2) + "px";
             areaElem.style.width  = Math.abs(x2 - x1) + "px";
             areaElem.style.height = Math.abs(y2 - y1) + "px";
-            checkIntersections(areaElem, contElem, selectableElems);
+            const [intersected, nonIntersected] = checkIntersections(areaElem, contElem, selectableElems);
+            onUpdate?.(intersected, nonIntersected, selectableElems);
 
-            globalThis.debugInfo?.(contElem, areaElem, event); // [debug-log]
+            globalThis.debugInfo?.(contElem, areaElem, event); // [debug-log] just for the demo web page
         }
         addEventListener("scroll", resizeAreaPerFrame, {capture: true, passive: true});
         contElem.addEventListener("pointermove", resizeAreaPerFrame);
@@ -71,25 +79,27 @@ function cellNum(num, min, max) {
 
 function checkIntersections(selectAreaElem, contElem, selectableElems) {
     const areaRect = getRect(selectAreaElem);
+    const intersected = [], nonIntersected = [];
     for (const itemElem of selectableElems) {
         const itemRect = getRect(itemElem);
         if (isRectanglesIntersected(
             {x: areaRect.x + contElem.scrollLeft, y: areaRect.y + contElem.scrollTop, width: areaRect.width, height: areaRect.height},
             {x: itemRect.x + contElem.scrollLeft, y: itemRect.y + contElem.scrollTop, width: itemRect.width, height: itemRect.height},
         )) {
-            itemElem.classList.add(selectedItemClass);
+            intersected.push(itemElem);
         } else {
-            itemElem.classList.remove(selectedItemClass);
+            nonIntersected.push(itemElem);
         }
     }
+    return [intersected, nonIntersected];
 }
 
-function createEmptyAreaAt(x, y) {
+function createEmptyAreaAt(x, y, className) {
     const areaElem = document.createElement("div");
     areaElem.style.position = "absolute";
     areaElem.style.left = x + "px";
     areaElem.style.top  = y + "px";
-    areaElem.classList.add("drag-select-area");
+    className && areaElem.classList.add(className);
     return areaElem;
 }
 
