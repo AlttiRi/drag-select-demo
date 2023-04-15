@@ -15,7 +15,7 @@ It's the relative short js demo, less than 200 lines of the code, but it has the
 
 - scrolling by the selecting area with speed accelerating, independently of the display's frame time,
 - correct the selecting area resizing with the `"scroll"` event,
-- the selecting area celling in the target element's view port,
+- the selecting area celling within the target element's view port,
 - re-calculation is no more than once per one animation frame (`requestAnimationFrame`),
 - continues to work properly after an element resizing/moving,
 - ignores clicks on borders/scrolls,
