@@ -12,7 +12,6 @@ export function dragSelect(contElem) {
 
         const contElemStyles = getComputedStyle(contElem);
         const rtlLeftOffset = contElem.scrollLeft < 0 ? contElem.scrollLeft : 0;
-        const rtlWidthOffset = contElemStyles["direction"] === "rtl" ? contElem.scrollWidth - contElem.clientWidth : 0;
 
         const onScrollOrBorder = x1 <= 0 + rtlLeftOffset || y1 <= 0 ||
             x1 >= contElem.clientWidth + contElem.scrollLeft || y1 >= contElem.clientHeight + contElem.scrollTop;
@@ -46,8 +45,7 @@ export function dragSelect(contElem) {
             const contRect = getRect(contElem);
             let x2 = event.clientX + contElem.scrollLeft - contRect.x - contElem.clientLeft;
             let y2 = event.clientY + contElem.scrollTop  - contRect.y - contElem.clientTop;
-            x2 = cellNum(x2, 0 - rtlWidthOffset, contElem.scrollWidth - rtlWidthOffset);
-            y2 = cellNum(y2, 0, contElem.scrollHeight);
+            [x2, y2] = cellPointIntoElem(contElem, x2, y2);
             [x2, y2] = scrollElem(contElem, x2, y2);
 
             areaElem.style.left   = Math.min(x1, x2) + "px";
@@ -123,9 +121,24 @@ function enableTouchSupport(contElem, itemSelector) {
 }
 
 
-function scrollElem(contElem, x2, y2) {
+function cellPointIntoElem(contElem, x2, y2, rtlWidthOffset) {
+    if (rtlWidthOffset === undefined) {
+        const iSRightToLeft = getComputedStyle(contElem)["direction"] === "rtl"
+        rtlWidthOffset = iSRightToLeft ? contElem.scrollWidth - contElem.clientWidth : 0;
+    }
+    x2 = cellNum(x2, 0 - rtlWidthOffset, contElem.scrollWidth - rtlWidthOffset);
+    y2 = cellNum(y2, 0, contElem.scrollHeight);
+    return [x2, y2];
+}
+
+function cellPointIntoElemViewport(contElem, x2, y2) {
     x2 = cellNum(x2, contElem.scrollLeft, contElem.scrollLeft + contElem.clientWidth);
     y2 = cellNum(y2, contElem.scrollTop, contElem.scrollTop + contElem.clientHeight);
+    return [x2, y2];
+}
+
+function scrollElem(contElem, x2, y2) {
+    [x2, y2] = cellPointIntoElemViewport(contElem, x2, y2);
 
     const diff = Math.ceil(600 * (globalThis.frameTime || 12) / 1000);
     if (x2 === contElem.clientWidth + contElem.scrollLeft) {
