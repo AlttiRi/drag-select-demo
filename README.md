@@ -59,4 +59,32 @@ To get the correct `x2, y2` point on `"scroll"` event it keeps the last `Pointer
 
 ### Util functions
 
-todo ...
+#### enableTouchSupport
+It allows to do not have all time `touch-action` style set to `none`, so scrolling on mobile browsers will work.
+It works the follow way: the first `"pointerdown` event sets `touch-action` to `none` for a short time, and the next `"pointerdown` will start to
+draw the selecting area if it was made within that short time.
+So, on mobile browsers you just need to use double tap to start selecting.
+
+---
+
+TODO
+
+#### isRectanglesIntersected
+
+#### checkIntersections
+
+#### isClickInside
+
+#### getRect
+
+#### createEmptyAreaAt
+
+#### cellNum
+
+#### cellPointIntoElemViewport
+
+#### cellPointIntoElem
+
+#### scrollElem
+
+#### getAvgFrameTime
