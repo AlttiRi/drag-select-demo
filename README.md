@@ -15,7 +15,7 @@ when you need to select only some files to check their total size / download the
 
 It's the relative short js demo, less than 200 lines of the code, but it has the follow features:
 
-- scrolling by the selecting area with speed accelerating, independently of the display's frame time,
+- smooth scrolling by the selecting area touching the edge with speed accelerating _(based on the distance between the pointer and the target element's edge)_, independently of the display's frame time,
 - the correct selecting area resizing/positioning with the `"scroll"` event,
 - the selecting area celling within the target element's view port,
 - re-calculation is no more than once per one animation frame (`requestAnimationFrame`),
