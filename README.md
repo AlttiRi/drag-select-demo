@@ -42,3 +42,21 @@ The second argument is optional, is an object with follow keys: `onStart`, `onUp
 - `onUpdate` — on the selecting area resize/scrolling event callback, by default, it adds `"drag-selected"` class to the selected elements;
 - `onStart` — the selecting start callback, by default, it removes `"drag-selected"` class from all selected elements;
 
+The requirement for the target element is to have `position: relative` style for the correct position
+of the select area that uses `position: absolute`. So, `dragSelect` automatically adds this style. 
+Technically, it's possible to use `position: fixed` with the select area, but in this case it would require to add extra logic to get the same result
+as with `position: absolute`.
+
+`dragSelect` adds the main `"pointerdown"` event listener which does not handle clicks on the scroll bar, borders and the selectable items. 
+It works only when you start selecting from a click on the space between the selectable items within the target element.
+Also, it ignores touches if `touch-action` style is not `none`,
+since in this case browser already have the default handler for this event (scrolling).
+
+It draws the select area rectangle from `x1, y1` point (coordinates taken on `"pointerdown"` event) to `x2, y2` point (coordinates taken on `"pointermove"` event).
+To get the correct `x2, y2` point on `"scroll"` event it keeps the last `PointerEvent` event since `Event"` with `type: "scroll"` have missed `clientX` and `clientY` properties.
+
+`resizeArea` function is called not more than once per an animation frame due to `enqueueTask` function, which executes only the last added task when `requestAnimationFrame`'s callback fires.
+
+### Util functions
+
+todo ...
