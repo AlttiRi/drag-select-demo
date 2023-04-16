@@ -1,6 +1,6 @@
 # drag-select-demo
 
-Small and functional JavaScript drag-select [demo](https://alttiri.github.io/drag-select-demo/).
+JavaScript drag-select [demo](https://alttiri.github.io/drag-select-demo/).
 
 It's not a library, but this demo can be used as a starting point if you need to implement your own drag-select functional on a site.
 
@@ -18,10 +18,10 @@ It's the relative short js demo, less than 200 lines of the code, but it has the
 - smooth scrolling by the selecting area touching the edge with speed accelerating _(based on the distance between the pointer and the target element's edge)_, independently of the display's frame time,
 - the correct selecting area resizing/positioning with the `"scroll"` event,
 - the selecting area celling within the target element's view port,
+- properly displays the borders of the selecting area,
 - re-calculation is no more than once per one animation frame (`requestAnimationFrame`),
 - continues to work properly after an element resizing/moving,
 - ignores clicks on borders/scrolls,
-- properly displays the borders of the selecting area,
 - selectable items are interactive, they are continued to receive all events (text selecting, for example),
 - full touches support (use the double tap to start selecting),
 - rtl support (`direction: rtl;`).
