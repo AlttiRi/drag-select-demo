@@ -65,26 +65,56 @@ It works the follow way: the first `"pointerdown` event sets `touch-action` to `
 draw the selecting area if it was made within that short time.
 So, on mobile browsers you just need to use double tap to start selecting.
 
----
-
-TODO
-
-#### isRectanglesIntersected
-
-#### checkIntersections
-
 #### isClickInside
+
+It's just to ignore `"pointerdown"` events on the selectable elements.
 
 #### getRect
 
+Just a wrapper for `getBoundingClientRect`. 
+Technically, you can cache the result for the better performance, but do it carefully — you need to reset the cache after scrolling/resizing/moving.
+
+#### isRectanglesIntersected
+
+Returns `true` if there is an intersection between two rectangles (the selecting area and a selectable element).
+
+#### checkIntersections
+
+Checks the intersection of the select area with every selectable item.
+Ideally, it also should have some performance optimization to decrease the count of `isRectanglesIntersected` (`getRect`) calls.
+
 #### createEmptyAreaAt
 
-#### cellNum
+Just creates the selecting area at the cursor position (`x1, y1`) with the initial size (1x1).
+
+#### cellNum(num, min, max)
+
+Limits the passed `num` by `min`, `max` bounds.
 
 #### cellPointIntoElemViewport
 
+Limits the passed point (`x2, y2` from `"pointermove"`) by the target element's viewport.
+
 #### cellPointIntoElem
+
+Limits the passed point by the target element's bounds.
 
 #### scrollElem
 
+Scrolls the target element when the select area touches the target element's viewport bounds.
+It uses `cellPointIntoElemViewport`.
+Scroll speed is depended on the distance between the cursor and the element's viewport edge.
+To accelerate the speed move away the pointer.
+To make the scroll speed independent of the client's monitor frame rate (FPS),
+since `resizeArea` is called in `requestAnimationFrame`, it uses the frame time based multiplier `frameTime`.
+
+To makes scrolling smooth it's better to always scroll with the same speed (adds the same _integer_ difference in pixels).
+Do not use dynamically detected frame rate.
+Instead of such frame rate: `7 7 7 8 7 7 6 6 7 7` just always use the constant frame rate `7`.
+
 #### getAvgFrameTime
+
+Computes the average frame rate based of N calls of `requestAnimationFrame` and `Math.round`s it to an integer.
+
+I use it once after 200 ms after the web page loading and put the result to the global variable 
+`globalThis.frameTime` to use it in `scrollElem` function to makes scrolling speed the same on displays with the different frame rates.
